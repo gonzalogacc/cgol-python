@@ -24,10 +24,10 @@ python game_of_life.py [options]
 **Examples:**
 ```bash
 # Small fast simulation
-python game_of_life.py -b 20 -g 50 -s 0.2 -f 0.1
+uv run python game_of_life.py -b 20 -g 50 -s 0.2 -f 0.1
 
 # Large sparse world
-python game_of_life.py -b 100 -g 500 -s 0.15
+uv run python game_of_life.py -b 100 -g 500 -s 0.15
 ```
 
 ## TODO
