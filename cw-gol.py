@@ -108,7 +108,7 @@ class Board:
         board = self.board
         size = self.board_size
 
-        # Recorrer las celdas vecinas
+        # Search neighbouring cells
         for dy in [-1, 0, 1]:
             for dx in [-1, 0, 1]:
                 if dx == 0 and dy == 0:
