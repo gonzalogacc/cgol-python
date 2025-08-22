@@ -28,9 +28,22 @@ class Board:
 
     @staticmethod
     def make_board(board_size: int) -> array[int]:
+        """Create a flat array representing a 2D board.
+
+        Args:
+            board_size: Size of the square board.
+
+        Returns:
+            Flat array initialized with zeros (all dead cells).
+        """
         return array('I', [0 for _ in range(board_size*board_size)])
 
     def draw_board(self, title: str = "") -> None:
+        """Render the board to terminal.
+
+        Args:
+            title: Optional title to display above the board.
+        """
         print(chr(27) + "[2J")
         print(chr(27) + "[1;1f")
         board_string = ""
@@ -46,32 +59,51 @@ class Board:
         print(board_string)
 
     def set_cell(self, cell: Cell, value: bool) -> None:
+        """Set a cell's state.
+
+        Args:
+            cell: Cell coordinates.
+            value: True for alive, False for dead.
+        """
         self.board[cell.y*self.board_size + cell.x] = value
 
-    def set_temp_cell(self, cell: Cell, value: bool) -> None:
-        self.temp_board[cell.y*self.board_size + cell.x] = value
-
-    def get_cell(self, cell: Cell) -> bool:
-        if cell.y < 0 or cell.y >= self.board_size or cell.x < 0 or cell.x >= self.board_size:
-            raise IndexError(f"Index out of range cell: {cell}")
-        return self.board[cell.y*self.board_size + cell.x]
-
     def zero_temp_board(self) -> None:
+        """Clear the temporary board by setting all cells to dead."""
         for i in range(len(self.temp_board)):
             self.temp_board[i] = False
 
     def random_cells(self, cell_number: int) -> set[Cell]:
+        """Generate a set of random cell coordinates.
+
+        Args:
+            cell_number: Number of random cells to generate.
+
+        Returns:
+            Set of Cell objects with random coordinates.
+        """
         cells = set()
         for _ in range(cell_number):
             cells.add(Cell(x=random.choice(range(self.board_size)), y=random.choice(range(self.board_size))))
         return cells
 
     def set_random_board(self, initial_cell_count: int = 10) -> None:
-        """ Setup random cells in the board """
+        """Populate the board with random living cells.
+
+        Args:
+            initial_cell_count: Number of cells to set alive randomly.
+        """
         [self.set_cell(cell, True) for cell in self.random_cells(initial_cell_count)]
 
     def number_of_neighbours(self, cy: int, cx: int) -> int:
-        """Given a cell returns the number of live cells around the center"""
+        """Count living neighbors around a cell.
+
+        Args:
+            cy: Y coordinate (row) of center cell.
+            cx: X coordinate (column) of center cell.
+
+        Returns:
+            Number of living neighbors (0-8).
+        """
         count = 0
         board = self.board
         size = self.board_size
@@ -89,8 +121,9 @@ class Board:
         return count
 
     def board_step(self) -> None:
-        """
-        One board step
+        """Execute one generation of Conway's Game of Life.
+
+        Applies Conway's rules to every cell and generates the next board state.
         """
         self.zero_temp_board()
         size = self.board_size
@@ -109,6 +142,12 @@ class Board:
         self.board, self.temp_board = self.temp_board, self.board
 
     def run(self, periods: int = 10, sleep_time: float = .2) -> None:
+        """Run the simulation for a specified number of generations.
+
+        Args:
+            periods: Number of generations to simulate.
+            sleep_time: Time to sleep between generations.
+        """
         for step in range(1, periods+1):
             title = f"-- Generation: {step} --"
             self.board_step()
@@ -116,12 +155,25 @@ class Board:
             sleep(sleep_time)
 
     def set_blinker(self, center: Cell) -> None:
+        """Set up a blinker pattern (3-cell vertical oscillator).
+
+        Args:
+            center: Center cell of the blinker pattern.
+        """
         # linea vertical de 3
         self.set_cell(Cell(x=center.x, y=center.y), True)
         self.set_cell(Cell(x=center.x, y=center.y-1), True)
         self.set_cell(Cell(x=center.x, y=center.y+1), True)
 
 def main(board_size: int, freq: float, periods: int, saturation: float):
+    """Run Game of Life simulation with specified parameters.
+
+    Args:
+        board_size: Size of the square board.
+        freq: Refresh frequency (unused in this version).
+        periods: Number of generations to simulate.
+        saturation: Initial population density (0.0 to 1.0).
+    """
     board = Board(board_size)
     board.set_random_board(int(board_size*board_size*saturation))
     board.run(periods=periods, sleep_time=freq)
