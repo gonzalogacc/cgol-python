@@ -1,3 +1,4 @@
+import argparse
 import cProfile
 import collections
 import random
@@ -119,29 +120,34 @@ class Board:
         for i, nv in enumerate(self.temp_board):
             self.board[i] = nv
 
+    def run(self, periods: int = 10, sleep_time: float = .2) -> None:
+        for step in range(1, periods+1):
+            title = f"-- Generation: {step} --"
+            self.board_step()
+            self.draw_board(title)
+            sleep(sleep_time)
+
     def set_blinker(self, center: Cell) -> None:
         # linea vertical de 3
         self.set_cell(Cell(x=center.x, y=center.y), True)
         self.set_cell(Cell(x=center.x, y=center.y-1), True)
         self.set_cell(Cell(x=center.x, y=center.y+1), True)
 
-def main():
-    ## Initial board
-    board_size = 50
+def main(board_size: int, freq: float, periods: int, saturation: float):
     board = Board(board_size)
-    board.set_random_board(400)
-    # board.set_blinker(Cell(2,2))
+    board.set_random_board(int(board_size*board_size*saturation))
     board.draw_board("-- Initial board --")
     input()
-
-    for step in range(1, 201):
-        title = f"-- Generation: {step} --"
-        board.board_step()
-        board.draw_board(title)
-        sleep(.2)
-
+    board.run(periods=periods, sleep_time=freq)
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Launch board")
+    parser.add_argument("-b", "--board_size", type=int, default=25)
+    parser.add_argument("-f", "--freq", help="1/f refresh per second.", type=float, default=.2)
+    parser.add_argument("-g", "--generations", help="Number of generations", type=int, default=100)
+    parser.add_argument("-s", "--saturation", help="% of the board populated at start", type=float, default=.4)
+    args = parser.parse_args()
+
     # cProfile.run('main()', sort='cumtime')
-    main()
+    main(args.board_size, args.freq, args.generations, args.saturation)
