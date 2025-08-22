@@ -1,4 +1,4 @@
-# cgol-python
+# Conway game of life
 
 ```python
 uv run python cw-gol.py -b 50 -f .1 -s .3 -g 500
