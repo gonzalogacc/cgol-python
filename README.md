@@ -1,6 +1,6 @@
 # Conway's Game of Life
 
-A Python implementation of Conway's cellular automaton.
+A Python implementation of Conway's cellular automaton with a flat array.
 
 ## Rules
 
@@ -12,7 +12,7 @@ A Python implementation of Conway's cellular automaton.
 ## Usage
 
 ```bash
-python game_of_life.py [options]
+uv run python game_of_life.py [options]
 ```
 
 **Options:**
@@ -20,14 +20,18 @@ python game_of_life.py [options]
 - `-g, --generations`: Number of generations (default: 100)
 - `-s, --saturation`: Initial density 0.0-1.0 (default: 0.4)
 - `-f, --freq`: Time between generations (default: 0.2s)
+- `-p, --pattern`: .cells file to load pattern, "random" for random board (default: random)
 
 **Examples:**
 ```bash
-# Small fast simulation
-uv run python game_of_life.py -b 20 -g 50 -s 0.2 -f 0.1
+# Random simulation
+uv run game_of_life.py -b 20 -g 50 -s 0.2 -f 0.1
 
-# Large sparse world
-uv run python game_of_life.py -b 100 -g 500 -s 0.15
+# Load a specific pattern
+uv run game_of_life.py -p glider.cells -b 50 -g 100
+
+# Large sparse random world
+uv run game_of_life.py -b 100 -g 500 -s 0.15 -p random
 ```
 
 ## TODO
